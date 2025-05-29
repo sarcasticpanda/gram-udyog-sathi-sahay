@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -55,7 +56,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
     }
   };
 
-  const t = translations[language] || translations.english;
+  const t = translations[language as keyof typeof translations] || translations.english;
 
   const skillCourses = [
     {
@@ -142,7 +143,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       category: 'हस्तकला'
     },
     {
-      title: language === 'hindi' ? 'हर्बल नीम साबुन' : 'Herbal Neem Soap',
+      name: language === 'hindi' ? 'हर्बल नीम साबुन' : 'Herbal Neem Soap',
       price: '₹95',
       seller: 'गीता शर्मा',
       location: 'उदयपुर',
@@ -264,7 +265,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                           : 'border-emerald-300 text-emerald-700 hover:bg-emerald-50'
                       }`}
                     >
-                      {label}
+                      {label as string}
                     </Button>
                   ))}
                 </div>
