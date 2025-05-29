@@ -12,12 +12,46 @@ interface WomensHubProps {
   language: string;
 }
 
-const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
-  const [activeSection, setActiveSection] = useState('skills');
+type SectionType = 'skills' | 'marketplace' | 'collaboration' | 'investment';
+
+export const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
+  const [activeSection, setActiveSection] = useState<SectionType>('skills');
   const [showProductForm, setShowProductForm] = useState(false);
   const [showInvestmentForm, setShowInvestmentForm] = useState(false);
   const [investmentType, setInvestmentType] = useState<'raise' | 'request'>('raise');
   
+  const handleVoiceCommand = (command: string, field?: string) => {
+    if (field) {
+      // Handle specific field inputs
+      switch (field) {
+        case 'productName':
+          setProductFormData(prev => ({ ...prev, name: command }));
+          break;
+        case 'productDescription':
+          setProductFormData(prev => ({ ...prev, description: command }));
+          break;
+        case 'productPrice':
+          setProductFormData(prev => ({ ...prev, price: command }));
+          break;
+        case 'businessName':
+          setInvestmentFormData(prev => ({ ...prev, businessName: command }));
+          break;
+        case 'businessDescription':
+          setInvestmentFormData(prev => ({ ...prev, description: command }));
+          break;
+        case 'investmentAmount':
+          setInvestmentFormData(prev => ({ ...prev, amount: command }));
+          break;
+        case 'investmentReturns':
+          setInvestmentFormData(prev => ({ ...prev, returns: command }));
+          break;
+        case 'investmentTimeline':
+          setInvestmentFormData(prev => ({ ...prev, timeline: command }));
+          break;
+      }
+    }
+  };
+
   const [productFormData, setProductFormData] = useState({
     name: '',
     description: '',
@@ -34,6 +68,63 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
     timeline: '',
     photo: ''
   });
+
+  const skillVideos = [
+    {
+      id: 1,
+      title: 'आम का अचार बनाना',
+      duration: '15 मिनट',
+      thumbnail: '/videos/thumbnails/pickle.jpg',
+      videoUrl: 'https://www.youtube.com/embed/AF9EO0vuSas',
+      category: 'food',
+      views: '2.3k'
+    },
+    {
+      id: 2,
+      title: 'हस्तनिर्मित साबुन',
+      duration: '25 मिनट',
+      thumbnail: '/videos/thumbnails/soap.jpg',
+      videoUrl: 'https://www.youtube.com/embed/T2_3QzmQbQA',
+      category: 'crafts',
+      views: '1.8k'
+    },
+    {
+      id: 3,
+      title: 'बैग बनाना',
+      duration: '30 मिनट',
+      thumbnail: '/videos/thumbnails/bag.jpg',
+      videoUrl: 'https://www.youtube.com/embed/BskjGe0s7eQ',
+      category: 'crafts',
+      views: '3.1k'
+    },
+    {
+      id: 4,
+      title: 'UPI पेमेंट सीखें',
+      duration: '10 मिनट',
+      thumbnail: '/videos/thumbnails/upi.jpg',
+      videoUrl: 'https://www.youtube.com/embed/VpeSXrfBn-g',
+      category: 'digital',
+      views: '5.2k'
+    },
+    {
+      id: 5,
+      title: 'पेपर क्राफ्ट',
+      duration: '20 मिनट',
+      thumbnail: '/videos/thumbnails/papercraft.jpg',
+      videoUrl: 'https://www.youtube.com/embed/hvLpbuYF7uM',
+      category: 'crafts',
+      views: '1.5k'
+    },
+    {
+      id: 6,
+      title: 'मसाले बनाना',
+      duration: '15 मिनट',
+      thumbnail: '/videos/thumbnails/spices.jpg',
+      videoUrl: 'https://www.youtube.com/embed/sCiyLD675Gc',
+      category: 'food',
+      views: '4.2k'
+    }
+  ];
 
   const [products, setProducts] = useState([
     {
@@ -179,45 +270,87 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-rose-800 mb-4">
-          👩‍🌾 {language === 'hindi' ? 'महिला सशक्तिकरण केंद्र' : 'Women Empowerment Hub'}
-        </h2>
-        <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-          {language === 'hindi' 
-            ? 'सीखें, बेचें, कमाएं और एक-दूसरे का साथ दें। आपका सपनों का कारोबार यहीं से शुरू होता है।'
-            : 'Learn, Sell, Earn and Support Each Other. Your dream business starts here.'
-          }
-        </p>
-      </div>
+      <div className="text-center space-y-6">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-rose-800 mb-4">
+            👩‍🌾 {language === 'hindi' ? 'महिला सशक्तिकरण केंद्र' : 'Women Empowerment Hub'}
+          </h2>
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-6">
+            {language === 'hindi' 
+              ? 'सीखें, बेचें, कमाएं और एक-दूसरे का साथ दें। आपका सपनों का कारोबार यहीं से शुरू होता है।'
+              : 'Learn, Sell, Earn and Support Each Other. Your dream business starts here.'
+            }
+          </p>
+        </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex justify-center">
-        <div className="bg-white rounded-full p-1 shadow-lg border-2 border-rose-200">
-          <div className="flex gap-1">
-            {[
-              { id: 'skills', label: language === 'hindi' ? '🎓 नई कलाएं' : '🎓 New Skills', icon: BookOpen },
-              { id: 'marketplace', label: language === 'hindi' ? '🛒 बाजार' : '🛒 Marketplace', icon: ShoppingBag },
-              { id: 'collaboration', label: language === 'hindi' ? '🤝 सहयोग' : '🤝 Collaboration', icon: Users },
-              { id: 'investment', label: language === 'hindi' ? '💰 निवेश' : '💰 Investment', icon: DollarSign }
-            ].map((tab) => (
-              <Button
-                key={tab.id}
-                variant={activeSection === tab.id ? "default" : "ghost"}
-                className={`rounded-full px-4 py-2 text-sm ${
-                  activeSection === tab.id 
-                    ? 'bg-rose-500 text-white shadow-md' 
-                    : 'text-rose-700 hover:bg-rose-50'
-                }`}
-                onClick={() => setActiveSection(tab.id)}
-              >
-                <tab.icon className="w-4 h-4 mr-2" />
-                {tab.label}
-              </Button>
-            ))}
-          </div>
+        {/* Quick Action Buttons */}
+        <div className="flex justify-center gap-4 flex-wrap">
+          <Button
+            variant="outline"
+            className="bg-rose-50 hover:bg-rose-100 border-rose-200 text-rose-700 hover:text-rose-800 px-6 py-3 rounded-full"
+            onClick={() => setActiveSection('skills')}
+          >
+            <BookOpen className="w-5 h-5 mr-2" />
+            {t.learn}
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-700 hover:text-amber-800 px-6 py-3 rounded-full"
+            onClick={() => setActiveSection('marketplace')}
+          >
+            <ShoppingBag className="w-5 h-5 mr-2" />
+            {t.sell}
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-purple-50 hover:bg-purple-100 border-purple-200 text-purple-700 hover:text-purple-800 px-6 py-3 rounded-full"
+            onClick={() => setActiveSection('collaboration')}
+          >
+            <Users className="w-5 h-5 mr-2" />
+            {t.connect}
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-700 hover:text-emerald-800 px-6 py-3 rounded-full"
+            onClick={() => setActiveSection('investment')}
+          >
+            <IndianRupee className="w-5 h-5 mr-2" />
+            {t.invest}
+          </Button>
         </div>
       </div>
+
+      {/* Skills Videos Section */}
+      {activeSection === 'skills' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+          {skillVideos.map((video) => (
+            <Card key={video.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div className="relative aspect-video">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src={video.videoUrl}
+                  title={video.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-lg text-gray-900">{video.title}</h3>
+                  <Badge variant="secondary">{video.duration}</Badge>
+                </div>
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <span className="flex items-center gap-1">
+                    <Play className="w-4 h-4" />
+                    {video.views} देखा गया
+                  </span>
+                  <Badge variant="outline">{t.categories[video.category as keyof typeof t.categories]}</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {/* Skills Section */}
       {activeSection === 'skills' && (
@@ -304,7 +437,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
               <Card key={index} className="border-2 border-pink-200 hover:shadow-xl transition-all transform hover:scale-105">
                 <div className="relative">
                   <img src={skill.image} alt={skill.title} className="w-full h-48 object-cover rounded-t-lg" />
-                  <div className="absolute top-3 right-3 bg-black bg-opacity-70 text-white px-2 py-1 rounded-full text-sm">
+                  <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-sm font-medium">
                     {skill.duration}
                   </div>
                   <div className="absolute bottom-3 left-3">
@@ -379,7 +512,10 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       placeholder={language === 'hindi' ? 'जैसे: आम का अचार' : 'e.g., Mango Pickle'}
                       className="flex-1"
                     />
-                    <VoiceHelper language={language} />
+                    <VoiceHelper 
+                      language={language}
+                      onVoiceCommand={(command) => setProductFormData(prev => ({ ...prev, name: command }))}
+                    />
                   </div>
                 </div>
 
@@ -394,7 +530,10 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       placeholder={language === 'hindi' ? 'अपने उत्पाद के बारे में बताएं...' : 'Tell about your product...'}
                       className="min-h-20 flex-1"
                     />
-                    <VoiceHelper language={language} />
+                    <VoiceHelper 
+                      language={language}
+                      onVoiceCommand={(command) => setProductFormData(prev => ({ ...prev, description: command }))}
+                    />
                   </div>
                 </div>
 
@@ -409,7 +548,16 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       placeholder="₹100"
                       className="flex-1"
                     />
-                    <VoiceHelper language={language} />
+                    <VoiceHelper 
+                      language={language}
+                      onVoiceCommand={(command) => {
+                        // Extract numbers from voice command
+                        const price = command.match(/\d+/)?.[0];
+                        if (price) {
+                          setProductFormData(prev => ({ ...prev, price: `₹${price}` }));
+                        }
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -542,7 +690,10 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       placeholder={language === 'hindi' ? 'जैसे: साबुन का कारोबार' : 'e.g., Soap Business'}
                       className="flex-1"
                     />
-                    <VoiceHelper language={language} />
+                    <VoiceHelper 
+                      language={language}
+                      onVoiceCommand={(command) => setInvestmentFormData(prev => ({ ...prev, businessName: command }))}
+                    />
                   </div>
                 </div>
 
@@ -557,7 +708,10 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       placeholder={language === 'hindi' ? 'अपने व्यापार के बारे में बताएं...' : 'Tell about your business...'}
                       className="min-h-20 flex-1"
                     />
-                    <VoiceHelper language={language} />
+                    <VoiceHelper 
+                      language={language}
+                      onVoiceCommand={(command) => setInvestmentFormData(prev => ({ ...prev, description: command }))}
+                    />
                   </div>
                 </div>
 
@@ -573,7 +727,15 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                         placeholder="₹10,000"
                         className="flex-1"
                       />
-                      <VoiceHelper language={language} />
+                      <VoiceHelper 
+                        language={language}
+                        onVoiceCommand={(command) => {
+                          const amount = command.match(/\d+/)?.[0];
+                          if (amount) {
+                            setInvestmentFormData(prev => ({ ...prev, amount: `₹${amount.replace(/,/g, '')}` }));
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -588,7 +750,18 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                         placeholder={language === 'hindi' ? '15% वार्षिक' : '15% Annual'}
                         className="flex-1"
                       />
-                      <VoiceHelper language={language} />
+                      <VoiceHelper 
+                        language={language}
+                        onVoiceCommand={(command) => {
+                          const percentage = command.match(/\d+/)?.[0];
+                          if (percentage) {
+                            setInvestmentFormData(prev => ({ 
+                              ...prev, 
+                              returns: `${percentage}% ${language === 'hindi' ? 'वार्षिक' : 'Annual'}` 
+                            }));
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -598,13 +771,24 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                     {language === 'hindi' ? 'समयसीमा' : 'Timeline'}
                   </label>
                   <div className="flex gap-2">
-                    <Input
-                      value={investmentFormData.timeline}
-                      onChange={(e) => setInvestmentFormData(prev => ({ ...prev, timeline: e.target.value }))}
-                      placeholder={language === 'hindi' ? '6 महीने' : '6 months'}
-                      className="flex-1"
-                    />
-                    <VoiceHelper language={language} />
+                      <Input
+                        value={investmentFormData.timeline}
+                        onChange={(e) => setInvestmentFormData(prev => ({ ...prev, timeline: e.target.value }))}
+                        placeholder={language === 'hindi' ? '6 महीने' : '6 months'}
+                        className="flex-1"
+                      />
+                      <VoiceHelper 
+                        language={language}
+                        onVoiceCommand={(command) => {
+                          const number = command.match(/\d+/)?.[0];
+                          if (number) {
+                            setInvestmentFormData(prev => ({ 
+                              ...prev, 
+                              timeline: `${number} ${language === 'hindi' ? 'महीने' : 'months'}` 
+                            }));
+                          }
+                        }}
+                      />
                   </div>
                 </div>
 

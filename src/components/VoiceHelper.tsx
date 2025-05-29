@@ -21,6 +21,19 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
   const [recognition, setRecognition] = useState<any>(null);
 
   useEffect(() => {
+    const cleanup = () => {
+      if (recognition) {
+        try {
+          recognition.stop();
+        } catch (error) {
+          console.error('Error stopping recognition:', error);
+        }
+      }
+      setIsListening(false);
+      setIsProcessing(false);
+      setLastCommand('');
+    };
+
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
@@ -31,7 +44,7 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
       
       recognitionInstance.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
-        setLastCommand(`"${transcript}" समझ गया`);
+        setLastCommand(`"${transcript}" ${language === 'hindi' ? 'समझ गया' : 'understood'}`);
         setIsProcessing(false);
         
         if (onVoiceCommand) {
@@ -45,9 +58,15 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
         }, 3000);
       };
       
-      recognitionInstance.onerror = () => {
+      recognitionInstance.onend = () => {
+        setIsListening(false);
         setIsProcessing(false);
-        setLastCommand('आवाज नहीं सुनाई दी');
+      };
+      
+      recognitionInstance.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsProcessing(false);
+        setLastCommand(language === 'hindi' ? 'आवाज नहीं सुनाई दी' : 'Could not hear voice');
         setTimeout(() => {
           setIsListening(false);
           setLastCommand('');
@@ -56,6 +75,9 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
       
       setRecognition(recognitionInstance);
     }
+
+    // Cleanup when component unmounts or language changes
+    return cleanup;
   }, [language, onVoiceCommand]);
 
   const voiceCommands = [
@@ -72,24 +94,58 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
 
   const toggleVoiceHelper = () => {
     if (!isListening && recognition) {
-      setIsListening(true);
-      setIsProcessing(true);
-      setLastCommand('सुन रहा हूं...');
-      recognition.start();
+      try {
+        // Reset any existing recognition state
+        recognition.abort();
+        recognition.stop();
+        
+        // Start fresh
+        setIsListening(true);
+        setIsProcessing(true);
+        setLastCommand(language === 'hindi' ? 'सुन रहा हूं...' : 'Listening...');
+        
+        // Small delay to ensure previous instance is fully stopped
+        setTimeout(() => {
+          try {
+            recognition.start();
+          } catch (error) {
+            console.error('Error in delayed start:', error);
+            setIsListening(false);
+            setIsProcessing(false);
+            setLastCommand(language === 'hindi' ? 'माइक चालू नहीं हो सका' : 'Could not start microphone');
+            setTimeout(() => setLastCommand(''), 3000);
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Error in initial recognition cleanup:', error);
+        setIsListening(false);
+        setIsProcessing(false);
+        setLastCommand(language === 'hindi' ? 'माइक चालू नहीं हो सका' : 'Could not start microphone');
+        setTimeout(() => setLastCommand(''), 3000);
+      }
     } else if (recognition) {
-      setIsListening(false);
-      setIsProcessing(false);
-      setLastCommand('');
-      recognition.stop();
+      try {
+        recognition.stop();
+        recognition.abort(); // Force stop
+        setIsListening(false);
+        setIsProcessing(false);
+        setLastCommand(language === 'hindi' ? 'माइक बंद' : 'Microphone off');
+        setTimeout(() => setLastCommand(''), 1500);
+      } catch (error) {
+        console.error('Error stopping voice recognition:', error);
+        // Force the state to stopped even if there's an error
+        setIsListening(false);
+        setIsProcessing(false);
+      }
     } else {
       // Fallback simulation if speech recognition is not supported
       setIsListening(true);
       setIsProcessing(true);
-      setLastCommand('सुन रहा हूं...');
+      setLastCommand(language === 'hindi' ? 'सुन रहा हूं...' : 'Listening...');
       
       setTimeout(() => {
         const randomCommand = voiceCommands[Math.floor(Math.random() * voiceCommands.length)];
-        setLastCommand(`"${randomCommand}" समझ गया`);
+        setLastCommand(`"${randomCommand}" ${language === 'hindi' ? 'समझ गया' : 'understood'}`);
         setIsProcessing(false);
         
         if (onVoiceCommand) {
@@ -99,7 +155,7 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
         setTimeout(() => {
           setIsListening(false);
           setLastCommand('');
-        }, 2000);
+        }, 3000);
       }, 2000);
     }
   };
@@ -115,6 +171,7 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
             : 'border-emerald-400 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-500'
         } ${isProcessing ? 'animate-pulse' : ''}`}
         disabled={isProcessing}
+        title={isListening ? 'माइक बंद करें' : 'आवाज से बोलें'}
       >
         {isListening ? (
           <MicOff className="w-5 h-5" />
@@ -125,18 +182,15 @@ const VoiceHelper: React.FC<VoiceHelperProps> = ({
           {isListening ? 'बंद करें' : 'आवाज'}
         </span>
         {isListening && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full animate-ping"></div>
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full animate-ping" />
         )}
       </Button>
-      
-      {lastCommand && (
+      {(lastCommand || isProcessing) && (
         <Badge 
-          variant="secondary" 
-          className={`text-xs px-3 py-1 max-w-48 truncate transition-all ${
-            isProcessing ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'
-          }`}
+          variant="outline" 
+          className={`animate-fade-in flex items-center gap-2 ${isProcessing ? 'bg-amber-50' : ''}`}
         >
-          <Volume2 className="w-3 h-3 mr-1" />
+          {isProcessing && <div className="w-2 h-2 bg-amber-500 rounded-full animate-ping" />}
           {lastCommand}
         </Badge>
       )}
