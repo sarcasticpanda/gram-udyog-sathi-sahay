@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,11 +34,25 @@ const Index = () => {
     }
   };
 
-  const currentLang = languages[selectedLanguage];
+  const currentLang = languages[selectedLanguage as keyof typeof languages] || languages.hindi;
 
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
     console.log(`Navigating to section: ${section}`);
+  };
+
+  const handleMainVoiceCommand = (command: string) => {
+    const lowerCommand = command.toLowerCase();
+    
+    if (lowerCommand.includes('job') || lowerCommand.includes('काम')) {
+      setActiveSection('jobs');
+    } else if (lowerCommand.includes('women') || lowerCommand.includes('महिला')) {
+      setActiveSection('women');
+    } else if (lowerCommand.includes('weather') || lowerCommand.includes('मौसम')) {
+      setActiveSection('weather');
+    } else if (lowerCommand.includes('home') || lowerCommand.includes('गृह')) {
+      setActiveSection('home');
+    }
   };
 
   return (
@@ -63,7 +76,7 @@ const Index = () => {
                 selectedLanguage={selectedLanguage}
                 onLanguageChange={setSelectedLanguage}
               />
-              <VoiceHelper />
+              <VoiceHelper onVoiceCommand={handleMainVoiceCommand} language={selectedLanguage} />
               <div className="bg-red-50 border-2 border-red-400 rounded-lg px-4 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-red-600" />
@@ -106,15 +119,19 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8">
         {activeSection === 'home' && (
           <div className="space-y-10">
-            {/* Hero Section with Real Village Image Placeholder */}
+            {/* Hero Section with Real Village Image */}
             <div className="relative text-center py-12 px-6 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-2xl shadow-lg">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/10 to-teal-600/10 rounded-2xl"></div>
               <div className="relative z-10">
                 <h2 className="text-3xl md:text-5xl font-bold text-gray-800 mb-6">
                   🌾 {currentLang.description}
                 </h2>
-                <div className="w-full h-64 bg-gray-200 rounded-xl mb-6 flex items-center justify-center">
-                  <span className="text-gray-600 text-lg">Rural Indian Village Scene - Farmers Working Together</span>
+                <div className="w-full h-64 rounded-xl mb-6 overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1500673922987-e212871fec22?w=800&h=400&fit=crop" 
+                    alt="Rural Indian Village Scene - Farmers Working Together"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 <div className="flex justify-center gap-6 flex-wrap mt-8">
@@ -202,8 +219,12 @@ const Index = () => {
               </CardHeader>
               <CardContent className="text-center p-8">
                 <div className="flex items-center justify-center gap-6 flex-wrap">
-                  <div className="w-20 h-20 bg-gradient-to-r from-rose-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-3xl">👩</span>
+                  <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg">
+                    <img 
+                      src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=200&h=200&fit=crop" 
+                      alt="Successful village entrepreneur"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex-1 min-w-80">
                     <p className="text-xl font-semibold text-gray-800 mb-3">

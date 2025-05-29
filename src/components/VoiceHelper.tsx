@@ -1,49 +1,106 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Volume2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-const VoiceHelper: React.FC = () => {
+interface VoiceHelperProps {
+  onVoiceCommand?: (command: string) => void;
+  placeholder?: string;
+  language?: string;
+}
+
+const VoiceHelper: React.FC<VoiceHelperProps> = ({ 
+  onVoiceCommand, 
+  placeholder = 'Voice commands...',
+  language = 'hindi'
+}) => {
   const [isListening, setIsListening] = useState(false);
   const [lastCommand, setLastCommand] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = language === 'hindi' ? 'hi-IN' : 'en-US';
+      
+      recognitionInstance.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setLastCommand(`"${transcript}" समझ गया`);
+        setIsProcessing(false);
+        
+        if (onVoiceCommand) {
+          onVoiceCommand(transcript);
+        }
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          setIsListening(false);
+          setLastCommand('');
+        }, 3000);
+      };
+      
+      recognitionInstance.onerror = () => {
+        setIsProcessing(false);
+        setLastCommand('आवाज नहीं सुनाई दी');
+        setTimeout(() => {
+          setIsListening(false);
+          setLastCommand('');
+        }, 2000);
+      };
+      
+      setRecognition(recognitionInstance);
+    }
+  }, [language, onVoiceCommand]);
 
   const voiceCommands = [
     'काम खोजें',
     'महिला केंद्र दिखाएं',
     'मौसम बताएं',
     'नई कलाएं सिखाएं',
+    'प्रोफाइल बनाएं',
     'Find jobs nearby',
     'Show women\'s hub',
-    'Weather update'
+    'Weather update',
+    'Create profile'
   ];
 
   const toggleVoiceHelper = () => {
-    if (!isListening) {
+    if (!isListening && recognition) {
+      setIsListening(true);
+      setIsProcessing(true);
+      setLastCommand('सुन रहा हूं...');
+      recognition.start();
+    } else if (recognition) {
+      setIsListening(false);
+      setIsProcessing(false);
+      setLastCommand('');
+      recognition.stop();
+    } else {
+      // Fallback simulation if speech recognition is not supported
       setIsListening(true);
       setIsProcessing(true);
       setLastCommand('सुन रहा हूं...');
       
-      // Simulate voice recognition process
       setTimeout(() => {
         const randomCommand = voiceCommands[Math.floor(Math.random() * voiceCommands.length)];
         setLastCommand(`"${randomCommand}" समझ गया`);
         setIsProcessing(false);
         
-        // Simulate response
+        if (onVoiceCommand) {
+          onVoiceCommand(randomCommand);
+        }
+        
         setTimeout(() => {
-          setLastCommand('कमांड प्रोसेस हो गया');
-          setTimeout(() => {
-            setIsListening(false);
-            setLastCommand('');
-          }, 2000);
-        }, 1500);
+          setIsListening(false);
+          setLastCommand('');
+        }, 2000);
       }, 2000);
-    } else {
-      setIsListening(false);
-      setIsProcessing(false);
-      setLastCommand('');
     }
   };
 
