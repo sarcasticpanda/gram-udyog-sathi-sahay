@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Mic, Heart, Users, Briefcase, ShoppingBag, BookOpen, Phone } from 'lucide-react';
+import { ArrowRight, Heart, Users, Briefcase, Phone, TrendingUp, Star } from 'lucide-react';
 import WeatherWidget from '@/components/WeatherWidget';
 import JobsSection from '@/components/JobsSection';
 import WomensHub from '@/components/WomensHub';
@@ -17,39 +17,44 @@ const Index = () => {
   const languages = {
     hindi: {
       title: 'ग्राम उद्योग',
-      tagline: 'पास में काम, महिलाओं के सपने, आसान बनाया',
-      helpline: 'हेल्पलाइन: 1800-XXX-XXXX',
+      tagline: 'नजदीकी काम, महिलाओं के सपने, सरल बनाया गया',
+      helpline: 'हेल्पलाइन: 1800-233-4567',
       findJobs: 'काम खोजें',
       womenHub: 'महिला केंद्र',
       weather: 'मौसम',
-      description: 'गांव के लोगों के लिए बनाया गया - काम खोजना और कमाना आसान!'
+      description: 'ग्रामीण भारत के लिए बनाया गया - काम खोजना और कमाना आसान बनाया!'
     },
     english: {
       title: 'Gram Udyog',
       tagline: 'Jobs Nearby, Women\'s Dreams, Made Simple',
-      helpline: 'Helpline: 1800-XXX-XXXX',
+      helpline: 'Helpline: 1800-233-4567',
       findJobs: 'Find Jobs',
       womenHub: 'Women\'s Hub',
       weather: 'Weather',
-      description: 'Built for villages - making work and earning simple!'
+      description: 'Built for Rural India - making work and earning accessible for everyone!'
     }
   };
 
   const currentLang = languages[selectedLanguage];
 
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    console.log(`Navigating to section: ${section}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-amber-50 to-orange-50">
       {/* Header */}
-      <header className="bg-white shadow-lg border-b-4 border-green-400">
+      <header className="bg-white shadow-lg border-b-4 border-emerald-500">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center shadow-lg">
+                <Heart className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-green-700">{currentLang.title}</h1>
-                <p className="text-sm text-gray-600">{currentLang.tagline}</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-emerald-800">{currentLang.title}</h1>
+                <p className="text-sm text-gray-700 font-medium">{currentLang.tagline}</p>
               </div>
             </div>
             
@@ -59,10 +64,10 @@ const Index = () => {
                 onLanguageChange={setSelectedLanguage}
               />
               <VoiceHelper />
-              <div className="bg-red-100 border border-red-300 rounded-lg px-3 py-2">
+              <div className="bg-red-50 border-2 border-red-400 rounded-lg px-4 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-red-600" />
-                  <span className="text-sm font-medium text-red-700">{currentLang.helpline}</span>
+                  <span className="text-sm font-semibold text-red-700">{currentLang.helpline}</span>
                 </div>
               </div>
             </div>
@@ -71,11 +76,11 @@ const Index = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b-2 border-green-200 sticky top-0 z-40">
+      <nav className="bg-white border-b-2 border-emerald-200 sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex justify-center space-x-1 md:space-x-4 py-3">
+          <div className="flex justify-center space-x-2 md:space-x-6 py-4">
             {[
-              { id: 'home', label: '🏠 Home', icon: Heart },
+              { id: 'home', label: '🏠 गृह', icon: Heart },
               { id: 'jobs', label: '🚜 ' + currentLang.findJobs, icon: Briefcase },
               { id: 'women', label: '👩 ' + currentLang.womenHub, icon: Users },
               { id: 'weather', label: '🌤️ ' + currentLang.weather, icon: ArrowRight }
@@ -83,12 +88,12 @@ const Index = () => {
               <Button
                 key={item.id}
                 variant={activeSection === item.id ? "default" : "outline"}
-                className={`text-xs md:text-sm px-2 md:px-4 py-2 rounded-full font-medium transition-all ${
+                className={`text-sm md:text-base px-4 md:px-6 py-3 rounded-lg font-medium transition-all ${
                   activeSection === item.id 
-                    ? 'bg-green-500 text-white shadow-lg scale-105' 
-                    : 'bg-white text-green-700 border-green-300 hover:bg-green-50'
+                    ? 'bg-emerald-600 text-white shadow-lg scale-105 border-emerald-600' 
+                    : 'bg-white text-emerald-700 border-emerald-300 hover:bg-emerald-50 hover:border-emerald-400'
                 }`}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => handleSectionChange(item.id)}
               >
                 {item.label}
               </Button>
@@ -98,99 +103,123 @@ const Index = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-8">
         {activeSection === 'home' && (
-          <div className="space-y-8">
-            {/* Hero Section */}
-            <div className="text-center py-8">
-              <h2 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
-                🌾 {currentLang.description}
-              </h2>
-              <div className="flex justify-center gap-4 flex-wrap mt-8">
-                <Card className="w-full md:w-80 border-2 border-green-300 hover:shadow-xl transition-all cursor-pointer transform hover:scale-105" 
-                      onClick={() => setActiveSection('jobs')}>
-                  <CardHeader className="bg-gradient-to-r from-green-400 to-blue-400 text-white text-center">
-                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Briefcase className="w-8 h-8 text-green-600" />
-                    </div>
-                    <CardTitle className="text-xl">{currentLang.findJobs}</CardTitle>
-                    <CardDescription className="text-green-50">
-                      {selectedLanguage === 'hindi' ? 'पास के काम देखें' : 'Find work nearby'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <Badge className="bg-green-100 text-green-800">🚜 Farming</Badge>
-                      <Badge className="bg-blue-100 text-blue-800">🔨 Construction</Badge>
-                      <Badge className="bg-orange-100 text-orange-800">🏪 Shop Work</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+          <div className="space-y-10">
+            {/* Hero Section with Real Village Image Placeholder */}
+            <div className="relative text-center py-12 px-6 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-2xl shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/10 to-teal-600/10 rounded-2xl"></div>
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-5xl font-bold text-gray-800 mb-6">
+                  🌾 {currentLang.description}
+                </h2>
+                <div className="w-full h-64 bg-gray-200 rounded-xl mb-6 flex items-center justify-center">
+                  <span className="text-gray-600 text-lg">Rural Indian Village Scene - Farmers Working Together</span>
+                </div>
+                
+                <div className="flex justify-center gap-6 flex-wrap mt-8">
+                  <Card className="w-full md:w-80 border-2 border-emerald-300 hover:shadow-2xl transition-all cursor-pointer transform hover:scale-105 bg-white" 
+                        onClick={() => handleSectionChange('jobs')}>
+                    <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center rounded-t-lg">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <Briefcase className="w-8 h-8 text-emerald-600" />
+                      </div>
+                      <CardTitle className="text-xl font-bold">{currentLang.findJobs}</CardTitle>
+                      <CardDescription className="text-emerald-100 font-medium">
+                        {selectedLanguage === 'hindi' ? 'नजदीकी काम देखें और तुरंत आवेदन करें' : 'Find nearby work and apply instantly'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="space-y-3">
+                        <Badge className="bg-emerald-100 text-emerald-800 text-sm px-3 py-1">🚜 खेती का काम</Badge>
+                        <Badge className="bg-blue-100 text-blue-800 text-sm px-3 py-1">🔨 निर्माण कार्य</Badge>
+                        <Badge className="bg-orange-100 text-orange-800 text-sm px-3 py-1">🏪 दुकान का काम</Badge>
+                      </div>
+                      <div className="mt-4 text-center">
+                        <div className="text-2xl font-bold text-emerald-600">500+</div>
+                        <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'उपलब्ध काम' : 'Available Jobs'}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                <Card className="w-full md:w-80 border-2 border-pink-300 hover:shadow-xl transition-all cursor-pointer transform hover:scale-105"
-                      onClick={() => setActiveSection('women')}>
-                  <CardHeader className="bg-gradient-to-r from-pink-400 to-purple-400 text-white text-center">
-                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Users className="w-8 h-8 text-pink-600" />
-                    </div>
-                    <CardTitle className="text-xl">{currentLang.womenHub}</CardTitle>
-                    <CardDescription className="text-pink-50">
-                      {selectedLanguage === 'hindi' ? 'सीखें और कमाएं' : 'Learn and Earn'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <Badge className="bg-pink-100 text-pink-800">🥒 Skills</Badge>
-                      <Badge className="bg-purple-100 text-purple-800">🛍️ Sell</Badge>
-                      <Badge className="bg-orange-100 text-orange-800">🤝 Connect</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <Card className="w-full md:w-80 border-2 border-rose-300 hover:shadow-2xl transition-all cursor-pointer transform hover:scale-105 bg-white"
+                        onClick={() => handleSectionChange('women')}>
+                    <CardHeader className="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-center rounded-t-lg">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <Users className="w-8 h-8 text-rose-600" />
+                      </div>
+                      <CardTitle className="text-xl font-bold">{currentLang.womenHub}</CardTitle>
+                      <CardDescription className="text-rose-100 font-medium">
+                        {selectedLanguage === 'hindi' ? 'सीखें, बेचें और एक-साथ बढ़ें' : 'Learn, Sell and Grow Together'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="space-y-3">
+                        <Badge className="bg-rose-100 text-rose-800 text-sm px-3 py-1">📚 नई कलाएं</Badge>
+                        <Badge className="bg-purple-100 text-purple-800 text-sm px-3 py-1">🛍️ उत्पाद बेचें</Badge>
+                        <Badge className="bg-amber-100 text-amber-800 text-sm px-3 py-1">🤝 निवेश करें</Badge>
+                      </div>
+                      <div className="mt-4 text-center">
+                        <div className="text-2xl font-bold text-rose-600">200+</div>
+                        <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'सफल महिलाएं' : 'Successful Women'}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg p-4 text-center border-2 border-green-200 shadow-md">
-                <div className="text-2xl font-bold text-green-600">500+</div>
-                <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'काम मिले' : 'Jobs Found'}</div>
+            {/* Enhanced Stats Section */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="bg-white rounded-xl p-6 text-center border-2 border-emerald-200 shadow-lg hover:shadow-xl transition-all">
+                <div className="text-3xl font-bold text-emerald-600 mb-2">500+</div>
+                <div className="text-sm text-gray-700 font-medium">{selectedLanguage === 'hindi' ? 'काम मिले' : 'Jobs Found'}</div>
+                <TrendingUp className="w-6 h-6 text-emerald-500 mx-auto mt-2" />
               </div>
-              <div className="bg-white rounded-lg p-4 text-center border-2 border-blue-200 shadow-md">
-                <div className="text-2xl font-bold text-blue-600">200+</div>
-                <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'उत्पाद बेचे' : 'Products Sold'}</div>
+              <div className="bg-white rounded-xl p-6 text-center border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all">
+                <div className="text-3xl font-bold text-blue-600 mb-2">250+</div>
+                <div className="text-sm text-gray-700 font-medium">{selectedLanguage === 'hindi' ? 'उत्पाद बेचे' : 'Products Sold'}</div>
+                <Star className="w-6 h-6 text-blue-500 mx-auto mt-2" />
               </div>
-              <div className="bg-white rounded-lg p-4 text-center border-2 border-pink-200 shadow-md">
-                <div className="text-2xl font-bold text-pink-600">100+</div>
-                <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'महिलाएं जुड़ीं' : 'Women Joined'}</div>
+              <div className="bg-white rounded-xl p-6 text-center border-2 border-rose-200 shadow-lg hover:shadow-xl transition-all">
+                <div className="text-3xl font-bold text-rose-600 mb-2">150+</div>
+                <div className="text-sm text-gray-700 font-medium">{selectedLanguage === 'hindi' ? 'महिलाएं जुड़ीं' : 'Women Joined'}</div>
+                <Users className="w-6 h-6 text-rose-500 mx-auto mt-2" />
               </div>
-              <div className="bg-white rounded-lg p-4 text-center border-2 border-orange-200 shadow-md">
-                <div className="text-2xl font-bold text-orange-600">₹50K+</div>
-                <div className="text-sm text-gray-600">{selectedLanguage === 'hindi' ? 'कुल कमाई' : 'Total Earned'}</div>
+              <div className="bg-white rounded-xl p-6 text-center border-2 border-amber-200 shadow-lg hover:shadow-xl transition-all">
+                <div className="text-3xl font-bold text-amber-600 mb-2">₹75K+</div>
+                <div className="text-sm text-gray-700 font-medium">{selectedLanguage === 'hindi' ? 'कुल कमाई' : 'Total Earned'}</div>
+                <Heart className="w-6 h-6 text-amber-500 mx-auto mt-2" />
               </div>
             </div>
 
-            {/* Success Story */}
-            <Card className="border-2 border-yellow-300 bg-gradient-to-r from-yellow-50 to-orange-50">
+            {/* Enhanced Success Story */}
+            <Card className="border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-center text-xl text-gray-800">
+                <CardTitle className="text-center text-2xl text-gray-800 font-bold">
                   ⭐ {selectedLanguage === 'hindi' ? 'सफलता की कहानी' : 'Success Story'}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-center">
-                <div className="flex items-center justify-center gap-4 flex-wrap">
-                  <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
-                    <span className="text-2xl">👩</span>
+              <CardContent className="text-center p-8">
+                <div className="flex items-center justify-center gap-6 flex-wrap">
+                  <div className="w-20 h-20 bg-gradient-to-r from-rose-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-3xl">👩</span>
                   </div>
-                  <div className="flex-1 min-w-64">
-                    <p className="text-lg font-medium text-gray-800">
+                  <div className="flex-1 min-w-80">
+                    <p className="text-xl font-semibold text-gray-800 mb-3">
                       {selectedLanguage === 'hindi' 
-                        ? '"रेखा जी ने बिहार से बैग बेचकर इस महीने ₹15,000 कमाए!"'
-                        : '"Rekha from Bihar earned ₹15,000 selling bags this month!"'
+                        ? '"रेखा देवी ने बिहार से हस्तनिर्मित बैग बेचकर इस महीने ₹18,000 कमाए!"'
+                        : '"Rekha Devi from Bihar earned ₹18,000 selling handmade bags this month!"'
                       }
                     </p>
-                    <p className="text-sm text-gray-600 mt-2">
-                      {selectedLanguage === 'hindi' ? '- गांव की सफल महिला उद्यमी' : '- Successful village entrepreneur'}
+                    <p className="text-base text-gray-600">
+                      {selectedLanguage === 'hindi' ? '- गांव की सफल महिला उद्यमी और तीन बच्चों की माँ' : '- Successful village entrepreneur and mother of three'}
                     </p>
+                    <div className="mt-4 flex justify-center">
+                      <Badge className="bg-emerald-100 text-emerald-800 text-sm px-4 py-2">
+                        {selectedLanguage === 'hindi' ? '6 महीने में 300% बढ़ोतरी' : '300% growth in 6 months'}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -203,24 +232,27 @@ const Index = () => {
         {activeSection === 'weather' && <WeatherWidget language={selectedLanguage} />}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
+      {/* Enhanced Footer */}
+      <footer className="bg-gray-800 text-white py-12 mt-16">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="w-6 h-6 text-red-400" />
-            <span className="text-lg font-medium">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Heart className="w-8 h-8 text-red-400" />
+            <span className="text-xl font-semibold">
               {selectedLanguage === 'hindi' 
-                ? 'गांव के लिए बनाया गया, प्यार के साथ'
-                : 'Made for villages, with love'
+                ? 'गांवों के लिए बनाया गया, प्रेम और समर्पण के साथ'
+                : 'Made for villages, with love and dedication'
               }
             </span>
           </div>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-300 text-base mb-4">
             {selectedLanguage === 'hindi' 
-              ? 'ग्राम उद्योग - हर सपने को साकार करना'
-              : 'Gram Udyog - Making every dream possible'
+              ? 'ग्राम उद्योग - हर सपने को साकार करने का साथी'
+              : 'Gram Udyog - Your partner in making every dream come true'
             }
           </p>
+          <div className="text-sm text-gray-400">
+            © 2024 Gram Udyog. {selectedLanguage === 'hindi' ? 'सभी अधिकार सुरक्षित।' : 'All rights reserved.'}
+          </div>
         </div>
       </footer>
     </div>
