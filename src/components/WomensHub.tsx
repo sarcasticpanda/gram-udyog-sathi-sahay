@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { BookOpen, ShoppingBag, Users, DollarSign, Star, Play, Heart, TrendingUp, Camera } from 'lucide-react';
+import { BookOpen, ShoppingBag, Users, DollarSign, Star, Play, Heart, TrendingUp, Camera, Plus, Target, IndianRupee } from 'lucide-react';
 import VoiceHelper from './VoiceHelper';
 import WomensCollaboration from './WomensCollaboration';
 
@@ -15,10 +15,23 @@ interface WomensHubProps {
 const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
   const [activeSection, setActiveSection] = useState('skills');
   const [showProductForm, setShowProductForm] = useState(false);
+  const [showInvestmentForm, setShowInvestmentForm] = useState(false);
+  const [investmentType, setInvestmentType] = useState<'raise' | 'request'>('raise');
+  
   const [productFormData, setProductFormData] = useState({
     name: '',
     description: '',
     price: '',
+    photo: ''
+  });
+
+  const [investmentFormData, setInvestmentFormData] = useState({
+    businessName: '',
+    description: '',
+    amount: '',
+    purpose: '',
+    returns: '',
+    timeline: '',
     photo: ''
   });
 
@@ -29,7 +42,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       price: '₹120/jar',
       seller: 'Rekha Devi',
       location: 'Jaipur',
-      image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&h=300&fit=crop',
+      image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=300&h=300&fit=crop',
       rating: 4.8,
       sales: 45
     },
@@ -39,9 +52,36 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       price: '₹250/piece',
       seller: 'Sunita Sharma',
       location: 'Udaipur',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=300&fit=crop',
+      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop',
       rating: 4.9,
       sales: 32
+    }
+  ]);
+
+  const [investments, setInvestments] = useState([
+    {
+      id: 1,
+      name: 'Radha Singh',
+      business: 'साबुन का कारोबार',
+      goal: '₹10,000',
+      raised: '₹7,500',
+      investors: 12,
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop',
+      description: 'हर्बल साबुन बनाकर बेचना चाहती हूं। पहले से 50 साबुन बेच चुकी हूं।',
+      returns: '15% वार्षिक',
+      timeline: '6 महीने'
+    },
+    {
+      id: 2,
+      name: 'Sunita Devi',
+      business: 'अचार का व्यापार',
+      goal: '₹15,000',
+      raised: '₹5,000',
+      investors: 8,
+      image: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&h=200&fit=crop',
+      description: 'घर का बना अचार ऑनलाइन बेचना चाहती हूं। स्वादिष्ट और शुद्ध।',
+      returns: '20% वार्षिक',
+      timeline: '8 महीने'
     }
   ]);
 
@@ -56,6 +96,8 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       sellProducts: 'अपने उत्पाद बेचें',
       connectWomen: 'महिलाओं से जुड़ें',
       getInvestment: 'निवेश प्राप्त करें',
+      raiseInvestment: 'निवेश जुटाएं',
+      requestInvestment: 'निवेश मांगें',
       categories: {
         all: 'सभी',
         food: '🍛 खाना',
@@ -75,6 +117,8 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       sellProducts: 'Sell Your Products',
       connectWomen: 'Connect with Women',
       getInvestment: 'Get Investment',
+      raiseInvestment: 'Raise Investment',
+      requestInvestment: 'Request Investment',
       categories: {
         all: 'All',
         food: 'Food',
@@ -96,7 +140,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
         price: productFormData.price,
         seller: 'आप',
         location: 'आपका क्षेत्र',
-        image: productFormData.photo || 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&h=300&fit=crop',
+        image: productFormData.photo || 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=300&h=300&fit=crop',
         rating: 5.0,
         sales: 0
       };
@@ -106,6 +150,29 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
       setShowProductForm(false);
       
       alert(language === 'hindi' ? 'उत्पाद सफलतापूर्वक जोड़ा गया!' : 'Product added successfully!');
+    }
+  };
+
+  const handleInvestmentSubmit = () => {
+    if (investmentFormData.businessName && investmentFormData.amount) {
+      const newInvestment = {
+        id: investments.length + 1,
+        name: 'आप',
+        business: investmentFormData.businessName,
+        goal: `₹${investmentFormData.amount}`,
+        raised: '₹0',
+        investors: 0,
+        image: investmentFormData.photo || 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop',
+        description: investmentFormData.description,
+        returns: investmentFormData.returns,
+        timeline: investmentFormData.timeline
+      };
+      
+      setInvestments(prev => [newInvestment, ...prev]);
+      setInvestmentFormData({ businessName: '', description: '', amount: '', purpose: '', returns: '', timeline: '', photo: '' });
+      setShowInvestmentForm(false);
+      
+      alert(language === 'hindi' ? 'निवेश अवसर सफलतापूर्वक जोड़ा गया!' : 'Investment opportunity added successfully!');
     }
   };
 
@@ -185,7 +252,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'आसान',
                 rating: 4.8,
                 learners: 234,
-                image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&h=300&fit=crop',
                 category: 'food'
               },
               {
@@ -194,7 +261,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'मध्यम',
                 rating: 4.9,
                 learners: 189,
-                image: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=300&fit=crop',
                 category: 'beauty'
               },
               {
@@ -203,7 +270,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'मध्यम',
                 rating: 4.7,
                 learners: 156,
-                image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
                 category: 'crafts'
               },
               {
@@ -212,7 +279,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'आसान',
                 rating: 4.6,
                 learners: 345,
-                image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
                 category: 'digital'
               },
               {
@@ -221,7 +288,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'आसान',
                 rating: 4.8,
                 learners: 123,
-                image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=300&fit=crop',
                 category: 'food'
               },
               {
@@ -230,7 +297,7 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                 difficulty: 'कठिन',
                 rating: 4.5,
                 learners: 89,
-                image: 'https://images.unsplash.com/photo-1493962853295-0fd70327578a?w=400&h=300&fit=crop',
+                image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
                 category: 'crafts'
               }
             ].map((skill, index) => (
@@ -400,42 +467,163 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
         <WomensCollaboration language={language} />
       )}
 
-      {/* Investment Section */}
+      {/* Enhanced Investment Section */}
       {activeSection === 'investment' && (
         <div className="space-y-6">
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
-              {language === 'hindi' ? '💰 महिला उद्यमियों में निवेश करें' : '💰 Invest in Women Entrepreneurs'}
+              {language === 'hindi' ? '💰 निवेश और फंडिंग' : '💰 Investment & Funding'}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-6">
               {language === 'hindi' 
-                ? 'दूसरी महिलाओं के सपनों में निवेश करें और साथ में बढ़ें'
-                : 'Invest in other women\'s dreams and grow together'
+                ? 'अपना व्यापार बढ़ाने के लिए निवेश जुटाएं या दूसरों के सपनों में निवेश करें'
+                : 'Raise investment to grow your business or invest in others\' dreams'
               }
             </p>
+            
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Button 
+                onClick={() => {
+                  setShowInvestmentForm(true);
+                  setInvestmentType('raise');
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 text-lg rounded-full"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                {language === 'hindi' ? 'निवेश जुटाएं' : 'Raise Investment'}
+              </Button>
+              <Button 
+                onClick={() => {
+                  setShowInvestmentForm(true);
+                  setInvestmentType('request');
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg rounded-full"
+              >
+                <Target className="w-5 h-5 mr-2" />
+                {language === 'hindi' ? 'निवेश मांगें' : 'Request Investment'}
+              </Button>
+            </div>
           </div>
 
+          {/* Investment Form */}
+          {showInvestmentForm && (
+            <Card className="border-2 border-purple-300 bg-purple-50">
+              <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                <CardTitle className="text-center">
+                  {investmentType === 'raise' 
+                    ? (language === 'hindi' ? 'निवेश जुटाएं' : 'Raise Investment')
+                    : (language === 'hindi' ? 'निवेश मांगें' : 'Request Investment')
+                  }
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="text-center">
+                  {investmentFormData.photo ? (
+                    <img src={investmentFormData.photo} alt="Business" className="w-32 h-24 object-cover rounded-lg mx-auto mb-3" />
+                  ) : (
+                    <div className="w-32 h-24 bg-gray-200 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <Camera className="w-8 h-8 text-gray-500" />
+                    </div>
+                  )}
+                  <Button variant="outline" className="text-sm">
+                    <Camera className="w-4 h-4 mr-2" />
+                    {language === 'hindi' ? 'व्यापार फोटो अपलोड करें' : 'Upload Business Photo'}
+                  </Button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {language === 'hindi' ? 'व्यापार का नाम' : 'Business Name'}
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={investmentFormData.businessName}
+                      onChange={(e) => setInvestmentFormData(prev => ({ ...prev, businessName: e.target.value }))}
+                      placeholder={language === 'hindi' ? 'जैसे: साबुन का कारोबार' : 'e.g., Soap Business'}
+                      className="flex-1"
+                    />
+                    <VoiceHelper language={language} />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {language === 'hindi' ? 'व्यापार का विवरण' : 'Business Description'}
+                  </label>
+                  <div className="flex gap-2">
+                    <Textarea
+                      value={investmentFormData.description}
+                      onChange={(e) => setInvestmentFormData(prev => ({ ...prev, description: e.target.value }))}
+                      placeholder={language === 'hindi' ? 'अपने व्यापार के बारे में बताएं...' : 'Tell about your business...'}
+                      className="min-h-20 flex-1"
+                    />
+                    <VoiceHelper language={language} />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      {language === 'hindi' ? 'कितनी राशि चाहिए' : 'Amount Needed'}
+                    </label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={investmentFormData.amount}
+                        onChange={(e) => setInvestmentFormData(prev => ({ ...prev, amount: e.target.value }))}
+                        placeholder="₹10,000"
+                        className="flex-1"
+                      />
+                      <VoiceHelper language={language} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      {language === 'hindi' ? 'वापसी दर' : 'Return Rate'}
+                    </label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={investmentFormData.returns}
+                        onChange={(e) => setInvestmentFormData(prev => ({ ...prev, returns: e.target.value }))}
+                        placeholder={language === 'hindi' ? '15% वार्षिक' : '15% Annual'}
+                        className="flex-1"
+                      />
+                      <VoiceHelper language={language} />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {language === 'hindi' ? 'समयसीमा' : 'Timeline'}
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={investmentFormData.timeline}
+                      onChange={(e) => setInvestmentFormData(prev => ({ ...prev, timeline: e.target.value }))}
+                      placeholder={language === 'hindi' ? '6 महीने' : '6 months'}
+                      className="flex-1"
+                    />
+                    <VoiceHelper language={language} />
+                  </div>
+                </div>
+
+                <div className="flex justify-center gap-3">
+                  <Button onClick={handleInvestmentSubmit} className="bg-purple-500 hover:bg-purple-600 text-white px-8">
+                    <IndianRupee className="w-4 h-4 mr-2" />
+                    {language === 'hindi' ? 'सबमिट करें' : 'Submit'}
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowInvestmentForm(false)}>
+                    {language === 'hindi' ? 'रद्द करें' : 'Cancel'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Investment Opportunities Grid */}
           <div className="grid gap-6">
-            {[
-              {
-                name: 'Radha Singh',
-                business: 'साबुन का कारोबार',
-                goal: '₹10,000',
-                raised: '₹7,500',
-                investors: 12,
-                image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=200&h=200&fit=crop',
-                description: 'हर्बल साबुन बनाकर बेचना चाहती हूं। पहले से 50 साबुन बेच चुकी हूं।'
-              },
-              {
-                name: 'Sunita Devi',
-                business: 'अचार का व्यापार',
-                goal: '₹15,000',
-                raised: '₹5,000',
-                investors: 8,
-                image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&h=200&fit=crop',
-                description: 'घर का बना अचार ऑनलाइन बेचना चाहती हूं। स्वादिष्ट और शुद्ध।'
-              }
-            ].map((investment, index) => (
+            {investments.map((investment, index) => (
               <Card key={index} className="border-2 border-green-200 hover:shadow-lg transition-all">
                 <CardContent className="p-6">
                   <div className="flex gap-4">
@@ -456,6 +644,21 @@ const WomensHub: React.FC<WomensHubProps> = ({ language }) => {
                       </div>
 
                       <p className="text-gray-600 mb-4">{investment.description}</p>
+
+                      <div className="grid md:grid-cols-3 gap-4 mb-4">
+                        <div className="bg-blue-50 p-3 rounded-lg">
+                          <div className="text-sm text-blue-600 font-medium">Target</div>
+                          <div className="text-lg font-bold text-blue-800">{investment.goal}</div>
+                        </div>
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <div className="text-sm text-green-600 font-medium">Returns</div>
+                          <div className="text-lg font-bold text-green-800">{investment.returns}</div>
+                        </div>
+                        <div className="bg-purple-50 p-3 rounded-lg">
+                          <div className="text-sm text-purple-600 font-medium">Timeline</div>
+                          <div className="text-lg font-bold text-purple-800">{investment.timeline}</div>
+                        </div>
+                      </div>
 
                       <div className="space-y-3">
                         <div>
