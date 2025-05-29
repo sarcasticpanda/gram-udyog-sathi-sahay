@@ -219,6 +219,10 @@ const JobsSection: React.FC<JobsSectionProps> = ({ language }) => {
         type: 'general',
         posted: 'Just now',
         employer: 'आप',
+        phone: '9876543210', // Default phone number
+        requirements: 'No specific requirements', // Default requirements
+        duration: 'As needed', // Default duration
+        rating: 4.0, // Default rating
         image: jobFormData.photo || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop'
       };
       
