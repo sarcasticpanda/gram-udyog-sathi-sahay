@@ -2,7 +2,7 @@
 
 A comprehensive platform designed to empower rural women entrepreneurs in India by providing them with tools, resources, and opportunities to grow their businesses.
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -29,7 +29,7 @@ npm run dev
 
 4. Open your browser and visit `http://localhost:5173`
 
-## 🌟 Features
+##  Features
 
 ### 1. Women's Empowerment Hub (महिला सशक्तिकरण केंद्र)
 - **Skill Development**: Access to video tutorials for various skills like pickle making, soap making, etc.
@@ -57,12 +57,12 @@ npm run dev
 - **Routing**: React Router
 - **State Management**: React Hooks
 
-## 🌐 Language Support
+## Language Support
 
 - Hindi (हिंदी)
 - English
 
-## 🎯 Project Goals
+##  Project Goals
 
 1. **Digital Inclusion**: Bridge the digital divide for rural women entrepreneurs
 2. **Economic Empowerment**: Provide tools and platforms for business growth
@@ -70,13 +70,13 @@ npm run dev
 4. **Market Access**: Connect rural businesses with broader markets
 5. **Financial Support**: Facilitate connections with investors
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - All the rural women entrepreneurs who inspired this project
 - The open-source community for their invaluable tools and resources
